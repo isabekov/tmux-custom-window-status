@@ -534,3 +534,6 @@ We can invoke it here:
 setw -g window-status-format "#[fg=red,bold]#I#[fg=white]:#[default]\
 #(get_pane_full_command \"#{pane_pid}\" \"#{pane_current_command}\" \"#{pane_current_path}\")"
 ```
+
+
+To split a long line in a BASH script use [this method](https://stackoverflow.com/questions/7729023/how-do-i-break-up-an-extremely-long-string-literal-in-bash).
