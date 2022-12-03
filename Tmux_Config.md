@@ -537,3 +537,128 @@ setw -g window-status-format "#[fg=red,bold]#I#[fg=white]:#[default]\
 
 
 To split a long line in a BASH script use [this method](https://stackoverflow.com/questions/7729023/how-do-i-break-up-an-extremely-long-string-literal-in-bash).
+
+
+
+
+Old setup:
+```
+# Window name variable is "#{=10:window_name}" (only first 10 characters)
+# Current working directory: #(pwd=\"#{pane_current_path}\"; echo ${pwd####*/})
+
+#setw -g window-status-format "#[fg=red,bold]#I#[fg=white]:#[fg=colour57,nobold]#(if [[ \"#{pane_current_command}\" =~ \(ba|z\)sh ]]; then echo \"\"; else echo \"#{pane_current_command}\"; fi) #[default]#{b:pane_current_path} #[fg=red,bold]#F "
+
+#ter="#(cur_ps=`ps -f --no-headers --ppid $(tmux display-message -p #{pane_pid}) | tr -s ' ' | cut -d' ' -f8- )`;  if [ -z $\{cur_ps\} ]; then echo -n \"\"; else a=$\{cur_ps%% *\}; b=$\{cur_ps####* \}; echo \"$\{a####*/\} $\{b####*/\}\";fi)"
+#setw -g window-status-format "#[fg=red,bold]#I#[fg=white]: #[fg=blue] $ter #[default]#{b:pane_current_path} #[fg=brown]#F"
+
+
+### ORIGINAL
+#setw -g window-status-format "#[fg=red,bold]#I#[fg=white]:#[default]#(curps=`ps -f --no-headers --ppid $(tmux display-message -p #{pane_pid}) | tr -s ' ' | cut -d' ' -f8- `; if [ -z $\{curps\} ]; then echo -n \"#{pane_current_command}\"; else a=$\{curps%% *\}; b=$\{curps####* \}; echo \"$\{a####*/\} $\{b####*/\}\";fi) #[fg=blue]#{=-20:#{b:pane_current_path}} #[fg=brown]#F"
+
+#ter="#(cur_ps=`ps -f --no-headers --ppid $(tmux display-message -p #{pane_pid}) | tr -s ' ' | cut -d' ' -f8- )`;  if [ -z $\{cur_ps\} ]; then echo -n \"\"; else a=$\{cur_ps%% *\}; b=$\{cur_ps####* \}; echo \"$\{a####*/\} $\{b####*/\}\";fi)"
+
+
+
+#(curps=`ps -f --no-headers --ppid $(tmux display-message -p #{pane_pid}) | tr -s ' ' | cut -d' ' -f8- `; a=$\{curps%% *\}; b=$\{curps####* \}; echo \"$\{a####*/\} $\{b####*/\}\")
+
+#run-shell "export curps=`ps -f --no-headers --ppid $(tmux display-message -p #{pane_pid}) | tr -s ' ' | cut -d' ' -f8- `; echo $curps >> /home/goldman/Desktop/file"
+#setw -g window-status-current-format "#[fg=black]$separator_powerline_right #[fg=brown]#I#[fg=blue]:#[fg=colour57,bold]\
+##(if [ -z $\{curps\} ]; then echo \"BANANA#{pane_current_command}\"; else a=$\{curps%% *\}; b=$\{curps####* \}; echo \"$\{a####*/\}sssss$\{a####*/\} $\{b####*/\}\";fi) #[fg=blue]#{=-20:#{b:pane_current_path}} #[fg=brown]#F"
+
+# ${var#*SubStr}  # drops substring from start of string up to first occurrence of `SubStr`
+# ${var##*SubStr} # drops substring from start of string up to last occurrence of `SubStr`
+# ${var%SubStr*}  # drops substring from last occurrence of `SubStr` to end of string
+# ${var%%SubStr*} # drops substring from first occurrence of `SubStr` to end of string
+
+# Check for environment variables
+#setw -g window-status-current-format "#[fg=black]$separator_powerline_right #[fg=brown]#I#[fg=blue]:#[fg=colour57,bold] #(curps=`echo \"aaa\nbbb\"|grep b`; echo $\{curps\})"
+
+
+# if [[ \"#{pane_current_command}\" =~ \(ba|z\)sh ]]; then echo \"\"; else echo \"#{pane_current_command}\"; fi) #[default]#{b:pane_current_path} #[fg=brown]#F"
+#setw -g window-status-bell-style 'fg=colour255 bg=colour1 bold'
+
+
+
+
+
+
+setw -g window-status-format "#[fg=red,bold]#I#[fg=white]:#[default]\
+#{?#{==:#{pane_current_command},ssh},\
+ssh SOME REMOTE,\
+#{?#{==:#{pane_current_command},zsh},\
+ZSH: #[fg=blue]#{=-20:#{b:pane_current_path}},\
+#{pane_current_command}}}\
+#[fg=brown]#F"
+
+
+
+setw -g window-status-format "#[fg=red,bold]#I#[fg=white]:#[default]\
+#(curps=`ps -f -o cmd --no-headers --ppid #{pane_pid}`;\
+ if [ -z $\{curps\} ]; then\
+   echo -n \"#{pane_current_command}\";\
+ else\
+   echo -n \"$\{curps####*/\}\";\
+fi)\
+#[fg=brown]#F"
+
+
+setw -g window-status-format "#[fg=red,bold]#I#[fg=white]:#[default]\
+#{?#{==:#{pane_current_command},ssh},\
+ssh SOME REMOTE,\
+#{?#{m/ri:(ba|z|^)sh,#{pane_current_command}},\
+#{pane_current_command}: #[fg=blue]#{=-20:#{b:pane_current_path}},\
+#{pane_current_command} }}\
+#[fg=brown]#F"
+
+setw -g window-status-format "#[fg=red,bold]#I#[fg=white]:#[default]\
+#{?#{==:#{pane_current_command},ssh},\
+#[fg=red bold]#(echo `ps -f -o cmd --no-headers --ppid #{pane_pid}`),\
+#{?#{m/ri:(ba|z|^)sh,#{pane_current_command}},\
+#{pane_current_command}: #[fg=blue]#{=-20:#{b:pane_current_path}},\
+#{pane_current_command} }}\
+#[fg=brown]ss#F"
+
+# Print working directory in the window name
+#setw -g window-status-current-format "#[fg=black]$separator_powerline_right #[fg=brown]#I#[fg=blue]:#[fg=colour57,bold] #(if [[ \"#{pane_current_command}\" =~ \(ba|z\)sh ]]; then echo \"\"; else echo \"#{pane_current_command}\"; fi) #[default]#{b:pane_current_path} #[fg=brown]#F"
+# Current command: #(ps -f --no-headers --ppid $(tmux display-message -p #{pane_pid}) | awk '{ print substr($0, index($0,$8)) }') "
+
+#setw -g window-status-current-format "#[fg=black]$separator_powerline_right #[fg=brown]#I#[fg=blue]:#[fg=colour57,bold] #(curps=`ps -f --no-headers --ppid $(tmux display-message -p #{pane_pid}) | awk '\{ print substr($0, index($0,$8)) \}'`; echo $\{curps\})"
+
+#setw -g window-status-current-format "#[fg=black]$separator_powerline_right #[fg=brown]#I#[fg=blue]:#[fg=colour57,bold] #(curps=`ps -f --no-headers --ppid $(tmux display-message -p #{pane_pid}) | tr -s ' ' | cut -d' ' -f8- `; echo $\{curps\})"
+
+#setw -g window-status-current-format "#[fg=black]$separator_powerline_right #[fg=brown]#I#[fg=blue]:#[fg=colour57,bold] #(curps=`ps -f --no-headers --ppid $(tmux display-message -p #{pane_pid}) | tr -s ' ' | cut -d' ' -f8- `; if [ -z $\{curps\} ]; then echo 'sorry'; else echo $\{curps\};fi)"
+
+# ORIGINAL CONFIG
+setw -g window-status-current-format "#[fg=black]$separator_powerline_right #[fg=brown]#I#[fg=blue]:\
+#[fg=colour57,bold] #(curps=`ps -f --no-headers --ppid #{pane_pid} | tr -s ' ' | cut -d' ' -f8- `;\
+if [ -z $\{curps\} ];then\
+  echo \"#{pane_current_command}\";\
+else a=$\{curps%% *\}; b=$\{curps####* \};\
+     echo \"$\{a####*/\} $\{b####*/\}\";\
+fi)\
+#[fg=blue]: #{=-20:#{b:pane_current_path}} #[fg=brown]#F"
+
+setw -g window-status-current-format "#[fg=black]$separator_powerline_right #[fg=red,bold]#I#[fg=white]: #[default]\
+#{?#{==:#{pane_current_command},ssh},\
+ssh SOME REMOTE,\
+#{pane_current_command}: #[fg=blue]#{=-20:#{b:pane_current_path}}}\
+#[fg=brown]#F"
+
+
+
+
+
+#set -g @plugin 'tmux_status_config/custom-status'
+
+
+
+set -g @plugin 'ofirgall/tmux-browser'
+set -g @open_browser_key 'B'
+set -g @new_browser_window 'firefox --new-window'
+set -g @browser_session_dir '$HOME/.tmux/browser-sessions'
+set -g @browser_wait_timeout '5.0'
+set -g @browser_dont_hook_to_resurrect '0'
+set -g @browser_launch_on_attach '0'
+set -g @browser_close_on_deattach '1'
+set -g @browser_brotab_timeout '5.0'
+```
