@@ -38,7 +38,7 @@ if [ $# -eq 5 ]; then
 fi
 
 # Retrieve full executed command name (with arguments) of the current process in the pane
-curps=`ps -f -o cmd --no-headers --ppid $1`
+curps=`ps -f -o comm --no-headers --ppid $1`
 
 if [ -z ${curps} ]; then
   echo -n "$2"
