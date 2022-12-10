@@ -39,6 +39,7 @@ fi
 
 # Retrieve full executed command name (with arguments) of the current process in the pane
 curps=`ps -f -o comm --no-headers --ppid $1`
+curpscmd=`ps -f -o cmd --no-headers --ppid $1`
 
 if [ -z ${curps} ]; then
   echo -n "$2"
@@ -51,22 +52,24 @@ else
   # of a whitespace inclusively from front of string "$a"
   b=${curps##* }
 
-  if [ $a = $b ]; then
-     # There are no arguments to the command "$a"
-     echo -n "$a"
+  if [ ${a::3} = 'ssh' ]; then
+     # Highlight SSH sessions with a special color
+      echo -n "#[fg=black,bold]$curpscmd"
   else
-     if [ ${a::3} = 'ssh' ]; then
-         # Highlight SSH sessions with a special color
-         echo -n "#[fg=red,bold]"
+     if [ $a = $b ]; then
+         # There are no arguments to the command "$a"
+         echo -n "$a"
+     else
+         echo -n "${a##*/} ${b##*/}"
      fi
-     echo -n "${a##*/} ${b##*/}"
   fi
 fi
 
 echo -n "#[fg=color90]"
 # Check if executed command is is "sh", "-sh", "bash", "-bash", "zsh", "-zsh"
 # Dash ("-") in front of a shell name means it is a login shell
-if [[ "$2" =~ ^[-]{0,1}(ba|z|)sh ]]; then
+
+if [[ "$2" =~ ^[-]{0,1}(ba|z|.{0})sh ]]; then
 
   # If it is user's home directory, replace it with "~"
   d="${3/\/home\/`whoami`/\~}"
