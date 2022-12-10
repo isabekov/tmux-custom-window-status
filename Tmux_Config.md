@@ -661,4 +661,21 @@ set -g @browser_dont_hook_to_resurrect '0'
 set -g @browser_launch_on_attach '0'
 set -g @browser_close_on_deattach '1'
 set -g @browser_brotab_timeout '5.0'
+
+
+
+# Last working configuration
+color_ws_fg="black"
+color_ws_bg="color28"
+setw -g window-status-style "fg=$color_ws_fg, bg=$color_ws_bg"
+setw -g window-status-separator " "
+setw -g window-status-format "#[fg=red,bold]#I#[fg=white]:#[default] #{custom_pane_name} #[fg=brown]#F"
+
+
+################### Windows (current) #########################
+color_wsc_bg="colour5"
+color_wsc_fg="black"
+setw -g window-status-current-style "fg=black bg=$color_wsc_bg bold"
+setw -g window-status-current-format "#[fg=black]$separator_powerline_right #[fg=red,bold]#I#[fg=white]:#[default] #{custom_pane_name} #[fg=brown]#F"
+
 ```
