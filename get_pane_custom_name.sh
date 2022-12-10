@@ -72,7 +72,7 @@ echo -n "#[fg=color90]"
 if [[ "$2" =~ ^[-]{0,1}(ba|z|.{0})sh ]]; then
 
   # If it is user's home directory, replace it with "~"
-  d="${3/\/home\/`whoami`/\~}"
+  d="${3/\/home\/`whoami`/'~'}"
 
   if [ ${#d} -gt ${na} ]; then
       if [ ${nb} -ne 0 ]; then
