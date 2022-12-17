@@ -41,20 +41,21 @@ fi
 curps=`ps -f -o comm --no-headers --ppid $1`
 curpscmd=`ps -f -o cmd --no-headers --ppid $1`
 
+# Delete all characters till the last occurence (counted from back)
+# of a whitespace inclusively from back of string "$a"
+a=${curps%% *}
+
+# Delete all characters till the last occurence (counted from front)
+# of a whitespace inclusively from front of string "$a"
+b=${curps##* }
+
+
 if [ -z ${curps} ]; then
   echo -n "$2"
 else
-  # Delete all characters till the last occurence (counted from back)
-  # of a whitespace inclusively from back of string "$a"
-  a=${curps%% *}
-
-  # Delete all characters till the last occurence (counted from front)
-  # of a whitespace inclusively from front of string "$a"
-  b=${curps##* }
-
   if [ ${a::3} = 'ssh' ]; then
      # Highlight SSH sessions with a special color
-      echo -n "#[fg=black,bold]$curpscmd"
+      echo -n "#[fg=red,bold]$curpscmd"
   else
      if [ $a = $b ]; then
          # There are no arguments to the command "$a"
@@ -68,7 +69,6 @@ fi
 echo -n "#[fg=color90]"
 # Check if executed command is is "sh", "-sh", "bash", "-bash", "zsh", "-zsh"
 # Dash ("-") in front of a shell name means it is a login shell
-
 if [[ "$2" =~ ^[-]{0,1}(ba|z|.{0})sh ]]; then
 
   # If it is user's home directory, replace it with "~"
