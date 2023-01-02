@@ -1,10 +1,5 @@
-# Tmux Configuration
-
-To cut screenshot:
-
-```
-$ convert tmux_1.png -crop 1259x33+0+970 tmux_1c.png
-```
+# Tmux Custom Window Status Plugin
+Work in progress: do not use.
 
 Current window status format (magenta):
 
@@ -35,7 +30,7 @@ setw -g window-status-format "#[fg=red,bold]#I#[fg=white]: #[default]\
 #[fg=brown]#F"
 ```
 
-![image](tmux_-1c.png)
+![image](screenshots/tmux_-1c.png)
 
 ```
 setw -g window-status-format "#[fg=red,bold]#I#[fg=white]: #[default]\
@@ -43,7 +38,7 @@ setw -g window-status-format "#[fg=red,bold]#I#[fg=white]: #[default]\
 #[fg=brown]#F"
 ```
 
-![image](tmux_0c.png)
+![image](screenshots/tmux_0c.png)
 
 ```
 setw -g window-status-format "#[fg=red,bold]#I#[fg=white]: #[default]\
@@ -53,7 +48,7 @@ ssh SOME REMOTE,\
 #[fg=brown]#F"
 ```
 
-![image](tmux_1c.png)
+![image](screenshots/tmux_1c.png)
 
 If we want to add directory name to the name of the command only if the command is ZSH, then we can use:
 
@@ -67,7 +62,7 @@ ZSH: #[fg=blue]#{=-20:#{b:pane_current_path}},\
 #[fg=brown]#F"
 ```
 
-![image](tmux_2c.png)
+![image](screenshots/tmux_2c.png)
 
 Instead of if-then-else statement, we can use matching by a regular expression.
 For example, we want do display directory name if the executed command is SH, BASH or ZSH:
@@ -81,7 +76,7 @@ ssh SOME REMOTE,\
 #{pane_current_command} }}\
 #[fg=brown]#F"
 ```
-![image](tmux_3c.png)
+![image](screenshots/tmux_3c.png)
 
 Now let's fix the display of SSH. Suppose that we have a running SSH session:
 ```
@@ -125,7 +120,7 @@ setw -g window-status-format "#[fg=red,bold]#I#[fg=white]:#[default]\
 #{pane_current_command} }}\
 #[fg=brown]#F"
 ```
-![image](tmux_4c.png)
+![image](screenshots/tmux_4c.png)
 
 How about open man pages?
 
@@ -138,10 +133,10 @@ setw -g window-status-format "#[fg=red,bold]#I#[fg=white]:#[default]\
 #(echo `ps -f -o cmd --no-headers --ppid #{pane_pid}`)}}\
 #[fg=brown]#F"
 ```
-![image](tmux_5c.png)
+![image](screenshots/tmux_5c.png)
 
 Let's open console file manager `ranger` in window 1:
-![image](tmux_6c.png)
+![image](screenshots/tmux_6c.png)
 
 The window name is quite long. How do we strip unnecessary `/usr/bin/` prefix from the main executable of the process?
 
@@ -158,7 +153,7 @@ fi)\
  #[fg=blue]#{=-20:#{b:pane_current_path}},\
 } #[fg=brown]#F"
 ```
-![image](tmux_7c.png)
+![image](screenshots/tmux_7c.png)
 
 As you can see, nothing has changed except for the color of the SSH session name and an extra whitespace. Removal of conditional statement for SSH check is necesary because escaping of characters `$#{}` inside these statement apparently *does not work*.
 
@@ -246,7 +241,7 @@ fi)\
 } #[fg=brown]#F"
 ```
 
-![image](tmux_8c.png)
+![image](screenshots/tmux_8c.png)
 
 It worked, but matching of characters was too greedy. The string `/usr/bin/python -O /usr/bin/ranger` was trimmed to `ranger` since the last occurence of `/` if counted from the front, is just before the letter `r`.
 
@@ -308,7 +303,7 @@ fi)\
 ```
 which produces:
 
-![image](tmux_9c.png)
+![image](screenshots/tmux_9c.png)
 
 Why window number 2 (`bash`) and window number 4 (`sh`) have duplicates of the executed command? That's because `$a` and `$b` are equal.
 We can add an extra check for this case:
@@ -332,7 +327,7 @@ fi)\
 ```
 which produces:
 
-![image](tmux_10c.png)
+![image](screenshots/tmux_10c.png)
 
 Now highlighting SSH:
 ```
@@ -356,7 +351,7 @@ fi)\
  #[fg=blue]#{=-20:#{b:pane_current_path}},\
 } #[fg=brown]#F"
 ```
-![image](tmux_11c.png)
+![image](screenshots/tmux_11c.png)
 
 Now let's replace `/home/johndoe/` with `~/`.
 We will use substring replacement in BASH:
@@ -416,7 +411,7 @@ fi;\
  #[fg=brown]#F"
 ```
 
-![image](tmux_12c.png)
+![image](screenshots/tmux_12c.png)
 
 Before going forward, let's see how the BASH code above is interpreted by the operating system.
 Since the code above will be concatenated into one line, we can search for the same `curps` pattern among running processes.
@@ -492,7 +487,7 @@ fi;\
  #[fg=brown]#F"
 ```
 
-![image](tmux_13c.png)
+![image](screenshots/tmux_13c.png)
 
 
 Now let's move the whole logic into a separate BASH script:
@@ -678,4 +673,10 @@ color_wsc_fg="black"
 setw -g window-status-current-style "fg=black bg=$color_wsc_bg bold"
 setw -g window-status-current-format "#[fg=black]$separator_powerline_right #[fg=red,bold]#I#[fg=white]:#[default] #{custom_pane_name} #[fg=brown]#F"
 
+```
+
+To cut screenshot:
+
+```
+$ convert tmux_1.png -crop 1259x33+0+970 tmux_1c.png
 ```
